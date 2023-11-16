@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { LoggerModule } from './common/logger/logger.module';
+import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
+import { ApiModule } from './modules/api.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: join(process.cwd(), '.env'),
+    }),
+    ApiModule,
+    LoggerModule,
+  ],
 })
 export class AppModule {}
