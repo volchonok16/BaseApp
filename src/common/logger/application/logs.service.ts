@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { LogEntity } from '../../providers/postgres/entities/log.entity';
+import { LogEntity } from '../../providers/postgres/entities';
 import { CreateLogDto } from '../dto/createLog.dto';
 
 @Injectable()

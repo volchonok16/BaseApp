@@ -3,7 +3,7 @@ import LogsService from './application/logs.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from '../providers/postgres/database.module';
 import { CustomLogger } from './customLogger';
-import { LogEntity } from '../providers/postgres/entities/log.entity';
+import { LogEntity } from '../providers/postgres/entities';
 
 @Module({
   imports: [DatabaseModule, TypeOrmModule.forFeature([LogEntity])],

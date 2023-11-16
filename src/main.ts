@@ -2,16 +2,16 @@ import { ConfigService } from '@nestjs/config';
 import { environmentConstant } from './common/constants/environment.constant';
 import { Logger } from '@nestjs/common';
 import { swaggerEndpoint } from './common/constants/endpoints/swagger.endpoint';
-import { appInit } from './app.init';
+import { appConfig } from './common/configurations/app.config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { swaggerInit } from './common/swagger/swagger.init';
+import { swaggerConfig } from './common/configurations/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  appInit(app);
-  swaggerInit(app);
+  appConfig(app);
+  swaggerConfig(app);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>(environmentConstant.serverPort);

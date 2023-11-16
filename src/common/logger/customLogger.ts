@@ -6,7 +6,7 @@ import {
 import { environmentConstant } from '../constants/environment.constant';
 import { ConfigService } from '@nestjs/config';
 import LogsService from './application/logs.service';
-import { EnvironmentsEnum } from '../enums/environments.enum';
+import { EnvironmentsEnum } from '../shared/enums/environments.enum';
 import { getLogLevels } from './getLogLevels';
 import { CreateLogDto } from './dto/createLog.dto';
 
