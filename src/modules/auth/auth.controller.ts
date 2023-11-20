@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -23,6 +24,10 @@ import { LoginDto } from './dto/login.dto';
 import { Metadata } from '../../common/decorators/metadata.decorator';
 import { TMetadata } from '../../common/shared/types/metadata.type';
 import { TCreateToken } from '../../common/shared/types/create-token.type';
+import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
+import { NewPasswordDto } from './dto/newPassword.dto';
+import { CreateNewPasswordCommand } from './commands/create.new.password.command-handler';
+import { ApiNewPassword } from '../../common/documentations/auth-decorators/new.password.decorator';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -53,6 +58,18 @@ export class AuthController {
       RegistrationCommand,
       ResultNotificationFactory<IdView>
     >(new RegistrationCommand(dto));
+    return;
+  }
+
+  @Post(authEndpoint.passwordRecovery)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(RefreshTokenGuard)
+  @ApiNewPassword()
+  async passwordRecovery(@Req() req, @Body() dto: NewPasswordDto):Promise<void> {
+    await this.commandBus.execute<
+      CreateNewPasswordCommand,
+      ResultNotificationFactory<IdView>
+    >(new CreateNewPasswordCommand(req.user.userId, dto));
     return;
   }
 }

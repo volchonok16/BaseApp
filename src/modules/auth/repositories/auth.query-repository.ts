@@ -23,4 +23,8 @@ export class AuthQueryRepository {
     const isExists = await this.userRepository.exist({ where: { login } });
     return isExists ? 'login' : null;
   }
+
+  async getUserViaId(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
+  }
 }

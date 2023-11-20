@@ -35,4 +35,11 @@ export class TokensFactory {
       },
     );
   }
+
+  async checkToken(token: string, tokenType: TokenTypeEnum) {
+    return this.jwtService.verify(token, {
+      secret: this.configService.get(environmentConstant.secret[tokenType]),
+      ignoreExpiration: false,
+    });
+  }
 }
