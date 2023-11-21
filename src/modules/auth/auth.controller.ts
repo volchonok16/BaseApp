@@ -27,6 +27,7 @@ import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
 import { NewPasswordDto } from './dto/newPassword.dto';
 import { CreateNewPasswordCommand } from './commands/create.new.password.command-handler';
 import { ApiNewPassword } from '../../common/documentations/auth-decorators/new.password.decorator';
+import { LoginView } from './views/login.view';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -43,9 +44,10 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Metadata() meta: TMetadata,
   ): Promise<TCreateToken> {
-    const notification = await this.commandBus.execute(
-      new LoginCommand({ meta, ...user }),
-    );
+    const notification = await this.commandBus.execute<
+      LoginCommand,
+      ResultNotificationFactory<TCreateToken>
+    >(new LoginCommand({ meta, ...user }));
     return notification.getData();
   }
 
