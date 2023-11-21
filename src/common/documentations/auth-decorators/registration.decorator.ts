@@ -12,7 +12,11 @@ import { ErrorResult } from '../../shared/classes/error.view';
 export function ApiRegistration() {
   return applyDecorators(
     ApiTags('Auth'),
-    ApiOperation({ summary: 'Регистрация нового пользователя в системе' }),
+    ApiOperation({
+      summary: 'Регистрация нового пользователя в системе',
+      description:
+        'Пользователь вводи свою электронную почту и ему приходит письмо в котором содержатся данные, необходимые для авторизации',
+    }),
     ApiBody({
       type: RegistrationDto,
       required: true,

@@ -23,6 +23,7 @@ import { LoginDto } from './dto/login.dto';
 import { Metadata } from '../../common/decorators/metadata.decorator';
 import { TMetadata } from '../../common/shared/types/metadata.type';
 import { TCreateToken } from '../../common/shared/types/create-token.type';
+import { LoginView } from './views/login.view';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -39,20 +40,23 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Metadata() meta: TMetadata,
   ): Promise<TCreateToken> {
-    const notification = await this.commandBus.execute(
-      new LoginCommand({ meta, ...user }),
-    );
+    const notification = await this.commandBus.execute<
+      LoginCommand,
+      ResultNotificationFactory<TCreateToken>
+    >(new LoginCommand({ meta, ...user }));
     return notification.getData();
   }
 
   @Post(authEndpoint.registration)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  //@HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
-  async registration(@Body() dto: RegistrationDto): Promise<void> {
-    await this.commandBus.execute<
+  async registration(
+    @Body() dto: RegistrationDto,
+  ): Promise<{ email: string; password: string }> {
+    const notification = await this.commandBus.execute<
       RegistrationCommand,
-      ResultNotificationFactory<IdView>
+      ResultNotificationFactory<any>
     >(new RegistrationCommand(dto));
-    return;
+    return notification.getData();
   }
 }
