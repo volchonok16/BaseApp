@@ -18,9 +18,4 @@ export class AuthQueryRepository {
     const isExists = await this.userRepository.exist({ where: { email } });
     return isExists ? 'email' : null;
   }
-
-  async loginExists(login: string): Promise<string | null> {
-    const isExists = await this.userRepository.exist({ where: { login } });
-    return isExists ? 'login' : null;
-  }
 }

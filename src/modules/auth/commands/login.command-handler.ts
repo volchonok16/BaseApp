@@ -17,7 +17,7 @@ export class LoginCommand {
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler
-  extends BaseNotificationUseCase<LoginCommand, LoginView>
+  extends BaseNotificationUseCase<LoginCommand, TCreateToken>
   implements ICommandHandler<LoginCommand>
 {
   constructor(
