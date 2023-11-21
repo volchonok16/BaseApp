@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -65,11 +64,14 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(RefreshTokenGuard)
   @ApiNewPassword()
-  async passwordRecovery(@Req() req, @Body() dto: NewPasswordDto):Promise<void> {
+  async passwordRecovery(
+    @CurrentUser() user: TCurrentUser,
+    @Body() dto: NewPasswordDto,
+  ): Promise<void> {
     await this.commandBus.execute<
       CreateNewPasswordCommand,
       ResultNotificationFactory<IdView>
-    >(new CreateNewPasswordCommand(req.user.userId, dto));
+    >(new CreateNewPasswordCommand(user.userId, dto));
     return;
   }
 }
