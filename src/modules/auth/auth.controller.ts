@@ -23,6 +23,8 @@ import { LoginDto } from './dto/login.dto';
 import { Metadata } from '../../common/decorators/metadata.decorator';
 import { TMetadata } from '../../common/shared/types/metadata.type';
 import { TCreateToken } from '../../common/shared/types/create-token.type';
+import { EmailDto } from './dto/email.dto';
+import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -53,6 +55,16 @@ export class AuthController {
       RegistrationCommand,
       ResultNotificationFactory<IdView>
     >(new RegistrationCommand(dto));
+    return;
+  }
+
+  @Post(authEndpoint.authenticateEmail)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async authenticateEmail(@Body() dto: EmailDto): Promise<void> {
+    await this.commandBus.execute<
+      AuthenticateEmailCommand,
+      ResultNotificationFactory<IdView>
+    >(new AuthenticateEmailCommand(dto));
     return;
   }
 }

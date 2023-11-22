@@ -18,7 +18,7 @@ export class RegistrationDto {
   @MaxLength(20)
   @IsString()
   @IsNotEmpty()
-  login: string;
+  login?: string;
 
   @ApiProperty({ description: 'Пароль пользователя', example: 'qwerty' })
   @IsString()

@@ -16,8 +16,8 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 20 })
-  login: string;
+  @Column({ length: 20, nullable: true })
+  login: string | null;
 
   @Column({ length: 50 })
   email: string;
