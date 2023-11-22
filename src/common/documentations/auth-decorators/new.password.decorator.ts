@@ -1,14 +1,20 @@
-import { applyDecorators } from "@nestjs/common";
-import { ApiBadRequestResponse, ApiBody, ApiNoContentResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { ErrorResult } from "../../shared/classes/error.view";
-import { NewPasswordDto } from "../../../modules/auth/dto/newPassword.dto";
+import { applyDecorators } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ErrorResult } from '../../shared/classes/error.view';
+import { RegistrationDto } from '../../../modules/auth/dto/registration.dto';
 
 export function ApiNewPassword() {
   return applyDecorators(
     ApiTags('Auth'),
     ApiOperation({ summary: 'Смена пароля' }),
     ApiBody({
-      type: NewPasswordDto,
+      type: RegistrationDto,
       required: true,
     }),
     ApiNoContentResponse({

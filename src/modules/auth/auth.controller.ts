@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { authEndpoint } from '../../common/constants/endpoints/auth.endpoint';
 import {
@@ -13,7 +6,6 @@ import {
   ApiRegistration,
 } from '../../common/documentations/auth-decorators';
 import { RegistrationDto } from './dto/registration.dto';
-import { IdView } from './views/id.view';
 import { LoginCommand, RegistrationCommand } from './commands';
 import { ResultNotificationFactory } from '../../common/shared/classes/result-notification.factory';
 import { CheckCredentialGuard } from '../../common/guards/check-credential.guard';
@@ -23,11 +15,8 @@ import { LoginDto } from './dto/login.dto';
 import { Metadata } from '../../common/decorators/metadata.decorator';
 import { TMetadata } from '../../common/shared/types/metadata.type';
 import { TCreateToken } from '../../common/shared/types/create-token.type';
-import { RefreshTokenGuard } from '../../common/guards/refresh-token.guard';
-import { NewPasswordDto } from './dto/newPassword.dto';
 import { CreateNewPasswordCommand } from './commands/create.new.password.command-handler';
 import { ApiNewPassword } from '../../common/documentations/auth-decorators/new.password.decorator';
-import { LoginView } from './views/login.view';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -52,28 +41,27 @@ export class AuthController {
   }
 
   @Post(authEndpoint.registration)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  //@HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
-  async registration(@Body() dto: RegistrationDto): Promise<void> {
-    await this.commandBus.execute<
+  async registration(
+    @Body() dto: RegistrationDto,
+  ): Promise<{ email: string; password: string }> {
+    const notification = await this.commandBus.execute<
       RegistrationCommand,
-      ResultNotificationFactory<IdView>
+      ResultNotificationFactory<any>
     >(new RegistrationCommand(dto));
-    return;
+    return notification.getData();
   }
 
   @Post(authEndpoint.passwordRecovery)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(RefreshTokenGuard)
   @ApiNewPassword()
   async passwordRecovery(
-    @CurrentUser() user: TCurrentUser,
-    @Body() dto: NewPasswordDto,
-  ): Promise<void> {
-    await this.commandBus.execute<
+    @Body() dto: RegistrationDto,
+  ): Promise<{ email: string; password: string }> {
+    const notification = await this.commandBus.execute<
       CreateNewPasswordCommand,
-      ResultNotificationFactory<IdView>
-    >(new CreateNewPasswordCommand(user.userId, dto));
-    return;
+      ResultNotificationFactory<any>
+    >(new CreateNewPasswordCommand(dto));
+    return notification.getData();
   }
 }
