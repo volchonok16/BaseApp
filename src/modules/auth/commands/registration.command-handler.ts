@@ -29,7 +29,7 @@ export class RegistrationCommandHandler
     await this.checkFieldsExists(dto);
 
     const newUser = await UserEntity.create(dto);
-    return this.authRepository.createUser(newUser);
+    return this.authRepository.saveUser(newUser);
   }
 
   private async checkFieldsExists(dto: RegistrationDto): Promise<void> {

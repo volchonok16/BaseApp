@@ -28,6 +28,9 @@ export class UserEntity {
   @Column({ length: 30 })
   createdAt: string = new Date().toISOString();
 
+  @Column({ nullable: true })
+  isLoggedIn: boolean | null;
+
   @OneToMany(() => DeviceEntity, (d) => d.user)
   devices: DeviceEntity[];
 

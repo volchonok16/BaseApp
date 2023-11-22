@@ -32,6 +32,12 @@ export class LoginCommandHandler
     const tokens = await this.tokenFactory.getPairTokens(dto.userId);
     const createdAt = await this.getCreatedAt(tokens.accessToken);
 
+    const user = await this.authRepository.getUserById(dto.userId);
+    if (!user.isLoggedIn) {
+      user.isLoggedIn = true;
+      await this.authRepository.saveUser(user);
+    }
+
     const newDevice = DeviceEntity.create(dto, createdAt);
     await this.authRepository.createDevice(newDevice);
 
