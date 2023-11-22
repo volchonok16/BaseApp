@@ -12,6 +12,7 @@ import { AUTH_COMMAND_HANDLERS } from './commands';
 import { AuthRepository } from './repositories/auth.repositories';
 import { AuthQueryRepository } from './repositories/auth.query-repository';
 import { TokensFactory } from '../../common/shared/classes/token.factory';
+import { AuthHandler } from './auth.handler';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { TokensFactory } from '../../common/shared/classes/token.factory';
     JwtModule.register({}),
     TypeOrmModule.forFeature([DeviceEntity, UserEntity]),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthHandler],
   providers: [
     AuthRepository,
     AuthQueryRepository,
