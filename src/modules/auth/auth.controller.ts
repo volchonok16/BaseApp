@@ -25,6 +25,8 @@ import { TMetadata } from '../../common/shared/types/metadata.type';
 import { TCreateToken } from '../../common/shared/types/create-token.type';
 import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
+import { PasswordView } from './views/password.view';
+import { ApiAuthenticateEmail } from '../../common/documentations/auth-decorators/authenticate-email.decorator';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -59,12 +61,13 @@ export class AuthController {
   }
 
   @Post(authEndpoint.authenticateEmail)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async authenticateEmail(@Body() dto: EmailDto): Promise<void> {
-    await this.commandBus.execute<
+  @HttpCode(HttpStatus.CREATED)
+  @ApiAuthenticateEmail()
+  async authenticateEmail(@Body() dto: EmailDto): Promise<PasswordView> {
+    const result = await this.commandBus.execute<
       AuthenticateEmailCommand,
-      ResultNotificationFactory<IdView>
+      ResultNotificationFactory
     >(new AuthenticateEmailCommand(dto));
-    return;
+    return result.getData();
   }
 }
