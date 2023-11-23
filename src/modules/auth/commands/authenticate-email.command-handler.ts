@@ -7,7 +7,6 @@ import { UserEntity } from '../../../common/providers/postgres/entities';
 import generator from 'generate-password';
 import { EmailDto } from '../dto/email.dto';
 import { PasswordView } from '../views/password.view';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 export class AuthenticateEmailCommand {
   constructor(public readonly dto: EmailDto) {}
@@ -49,11 +48,5 @@ export class AuthenticateEmailCommandHandler
     const newUser = await UserEntity.create({ email, password });
     const { id } = await this.authRepository.saveUser(newUser);
     return { password, id };
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
-  async deleteNotLoggedInUsers() {
-    //delete all users who didn't log in during the day after registration
-    await this.authRepository.deleteNotLoggedInUsers();
   }
 }
