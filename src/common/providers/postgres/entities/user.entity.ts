@@ -10,14 +10,12 @@ import { RoleEntity } from './role.entity';
 import { RegistrationDto } from '../../../../modules/auth/dto/registration.dto';
 import bcrypt from 'bcrypt';
 import { DeviceEntity } from './device.entity';
+import { generatePassword } from '../../../shared/utils/generate-password.utils';
 
 @Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ length: 20, nullable: true })
-  login: string | null;
 
   @Column({ length: 50 })
   email: string;
@@ -38,10 +36,13 @@ export class UserEntity {
   @JoinTable({ name: 'user_role' })
   roles: RoleEntity[];
 
-  static async create(data: RegistrationDto): Promise<UserEntity> {
+  static async create(
+    data: RegistrationDto,
+  ): Promise<{ user: UserEntity; password: string }> {
     const result = Object.assign(new UserEntity(), data);
-    result.passwordHash = await bcrypt.hash(data.password, 10);
+    const password = generatePassword(16);
+    result.passwordHash = await bcrypt.hash(password, 10);
 
-    return result;
+    return { user: result, password };
   }
 }
