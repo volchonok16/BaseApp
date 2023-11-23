@@ -7,24 +7,24 @@ import { CustomLogger } from '../logger/customLogger';
 import { exceptionFilterSetup } from './exception-filter.setup';
 import cookieParser from 'cookie-parser';
 
-export const appConfig = (app: INestApplication) => {
-  const configService = app.get(ConfigService);
-  const clientUrl = configService.get(environmentConstant.client.url);
-  const clientPort = configService.get(environmentConstant.client.port);
-
-  const options = {
-    origin: [`${clientUrl}:${clientPort}`],
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    credentials: true,
-    allowedHeaders: [
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept',
-      'Authorization',
-    ],
-  };
-
-  baseAppConfig(app);
-  app.enableCors(options);
+export const appConfig = (app) => {
+  // const configService = app.get(ConfigService);
+  // const clientUrl = configService.get(environmentConstant.client.url);
+  // const clientPort = configService.get(environmentConstant.client.port);
+  //
+  // const options = {
+  //   origin: [`${clientUrl}:${clientPort}`],
+  //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  //   credentials: true,
+  //   allowedHeaders: [
+  //     'Access-Control-Allow-Headers',
+  //     'Origin, X-Requested-With, Content-Type, Accept',
+  //     'Authorization',
+  //   ],
+  // };
+  //
+  // baseAppConfig(app);
+  // app.enableCors(options);
   app.useLogger(app.get(CustomLogger));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 };
@@ -42,5 +42,5 @@ export const baseAppConfig = (app: INestApplication) => {
       whitelist: true,
     }),
   );
-  app.use(cookieParser());
+  //app.use(cookieParser());
 };

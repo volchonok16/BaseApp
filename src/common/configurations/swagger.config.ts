@@ -1,8 +1,7 @@
-import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { swaggerEndpoint } from '../constants/endpoints/swagger.endpoint';
 
-export const swaggerConfig = (app: INestApplication) => {
+export const swaggerConfig = (app) => {
   const swaggerOptions = new DocumentBuilder()
     .addCookieAuth('refreshToken')
     .setTitle('Authorization service')

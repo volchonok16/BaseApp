@@ -1,0 +1,1 @@
+export const AUTH_MICROSERVICE = Symbol("AUTH_MICROSERVICE");
