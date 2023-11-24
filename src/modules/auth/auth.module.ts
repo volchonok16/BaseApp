@@ -17,8 +17,6 @@ import { TasksService } from '../../common/shared/classes/tasks.service';
 
 @Module({
   imports: [
-    CqrsModule,
-    JwtModule.register({}),
     TypeOrmModule.forFeature([DeviceEntity, UserEntity]),
     ScheduleModule.forRoot(),
   ],
