@@ -4,7 +4,6 @@ import { IdView } from '../views/id.view';
 import { AuthQueryRepository } from '../repositories/auth.query-repository';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { UserEntity } from '../../../common/providers/postgres/entities';
-import generator from 'generate-password';
 import { EmailDto } from '../dto/email.dto';
 import { PasswordView } from '../views/password.view';
 
@@ -40,13 +39,8 @@ export class AuthenticateEmailCommandHandler
   }
 
   private async createNewUser(email: string): Promise<PasswordView & IdView> {
-    const password = generator.generate({
-      length: 10,
-      numbers: true,
-      uppercase: true,
-    });
-    const newUser = await UserEntity.create({ email, password });
-    const { id } = await this.authRepository.saveUser(newUser);
-    return { password, id };
+    const result = await UserEntity.create({ email });
+    const { id } = await this.authRepository.saveUser(result.user);
+    return { password: result.password, id };
   }
 }
