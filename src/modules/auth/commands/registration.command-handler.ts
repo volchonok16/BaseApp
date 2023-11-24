@@ -1,7 +1,6 @@
 import { RegistrationDto } from '../dto/registration.dto';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BaseNotificationUseCase } from '../../../common/shared/classes/base-notification.use-case';
-import { IdView } from '../views/id.view';
 import { AuthQueryRepository } from '../repositories/auth.query-repository';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { BadRequestException } from '@nestjs/common';
@@ -33,7 +32,7 @@ export class RegistrationCommandHandler
     if (emailExists) throw new BadRequestException(`Email already exists`);
 
     const { user, password } = await UserEntity.create(dto);
-    await this.authRepository.createUser(user);
+    await this.authRepository.saveUser(user);
 
     // TODO добавить отправление письма с сгенерированным паролем
 
