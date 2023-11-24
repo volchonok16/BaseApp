@@ -32,4 +32,11 @@ export const environmentConstant = {
     accessToken: 'AT_TTL',
     refreshToken: 'RT_TTL',
   },
+  oauth: {
+    yandex: {
+      clientId: 'YANDEX_CLIENT_ID',
+      secret: 'YANDEX_CLIENT_SECRET',
+      callbackUrl: 'YANDEX_CALLBACK_URL',
+    },
+  },
 };

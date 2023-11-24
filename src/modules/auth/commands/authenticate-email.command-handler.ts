@@ -38,7 +38,7 @@ export class AuthenticateEmailCommandHandler
     }
     return { password: null };
   }
-  // TODO
+
   // async executeUseCase({
   //   dto,
   // }: AuthenticateEmailCommand): Promise<PasswordView> {
