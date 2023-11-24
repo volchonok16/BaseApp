@@ -13,7 +13,6 @@ import {
   ApiRegistration,
 } from '../../common/documentations/auth-decorators';
 import { RegistrationDto } from './dto/registration.dto';
-import { IdView } from './views/id.view';
 import { LoginCommand, RegistrationCommand } from './commands';
 import { ResultNotificationFactory } from '../../common/shared/classes/result-notification.factory';
 import { CheckCredentialGuard } from '../../common/guards/check-credential.guard';
@@ -27,8 +26,6 @@ import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 import { PasswordView } from './views/password.view';
 import { ApiAuthenticateEmail } from '../../common/documentations/auth-decorators/authenticate-email.decorator';
-import { LoginView } from './views/login.view';
-
 
 @Controller(authEndpoint.default)
 export class AuthController {
