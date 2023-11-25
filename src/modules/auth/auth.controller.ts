@@ -5,12 +5,16 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { authEndpoint } from '../../common/constants/endpoints/auth.endpoint';
-import { ApiLogin } from '../../common/documentations/auth-decorators';
+import {
+  ApiAuthenticateEmail,
+  ApiLogin,
+  ApiOAuthRedirect,
+  ApiOAuthSignIn,
+} from '../../common/documentations/auth-decorators';
 import { LoginCommand } from './commands';
 import { ResultNotificationFactory } from '../../common/shared/classes/result-notification.factory';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -22,16 +26,12 @@ import { TCreateToken } from '../../common/shared/types/create-token.type';
 import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 import { PasswordView } from './views/password.view';
-import { ApiAuthenticateEmail } from '../../common/documentations/auth-decorators/authenticate-email.decorator';
-import {
-  ApiGoogleAuth,
-  ApiGoogleAuthRedirect,
-} from '../../common/documentations/auth-decorators/login-by-google.decorator';
 import {
   CheckCredentialGuard,
   GoogleAuthGuard,
   YandexAuthGuard,
 } from '../../common/guards';
+import { OAuthName } from '../../common/shared/enums/oauth-name.enum';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -68,31 +68,39 @@ export class AuthController {
 
   @Get(authEndpoint.google.signIn)
   @UseGuards(GoogleAuthGuard)
-  @ApiGoogleAuth()
+  @ApiOAuthSignIn(OAuthName.Google)
   async googleAuth() {}
 
   @Get(authEndpoint.google.redirect)
   @UseGuards(GoogleAuthGuard)
-  @ApiGoogleAuthRedirect()
-  async googleAuthRedirect(@Metadata() meta: TMetadata, @Req() req: any) {
+  @ApiOAuthRedirect(OAuthName.Google)
+  async googleAuthRedirect(
+    @Metadata() meta: TMetadata,
+    @CurrentUser() user: TCurrentUser,
+  ) {
     const notification = await this.commandBus.execute<
       LoginCommand,
       ResultNotificationFactory<TCreateToken>
-    >(new LoginCommand({ meta, ...req.user }));
+    >(new LoginCommand({ meta, ...user }));
     return notification.getData();
   }
 
   @Get(authEndpoint.yandex.signIn)
   @UseGuards(YandexAuthGuard)
+  @ApiOAuthSignIn(OAuthName.Yandex)
   async yandexAuth() {}
 
   @Get(authEndpoint.yandex.redirect)
   @UseGuards(YandexAuthGuard)
-  async yandexOauth(@Metadata() meta: TMetadata, @Req() req: any) {
+  @ApiOAuthRedirect(OAuthName.Yandex)
+  async yandexOauth(
+    @Metadata() meta: TMetadata,
+    @CurrentUser() user: TCurrentUser,
+  ) {
     const notification = await this.commandBus.execute<
       LoginCommand,
       ResultNotificationFactory<TCreateToken>
-    >(new LoginCommand({ meta, ...req.user }));
+    >(new LoginCommand({ meta, ...user }));
     return notification.getData();
   }
 }

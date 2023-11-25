@@ -4,11 +4,11 @@ import { Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { AuthQueryRepository } from '../../../modules/auth/repositories/auth.query-repository';
-import { StrategyName } from '../../shared/enums/strategy-name.enum';
+import { OAuthName } from '../../shared/enums/oauth-name.enum';
 import { environmentConstant } from '../../constants/environment.constant';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, StrategyName.JWT) {
+export class JwtStrategy extends PassportStrategy(Strategy, OAuthName.JWT) {
   constructor(
     private authQueryRepository: AuthQueryRepository,
     private configService: ConfigService,
