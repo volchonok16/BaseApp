@@ -9,6 +9,6 @@ export const authEndpoint = {
   },
   yandex: {
     signIn: 'yandex/signin',
-    redirect: 'yandex',
+    redirect: 'yandex/redirect',
   },
 };

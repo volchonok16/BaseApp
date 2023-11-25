@@ -3,14 +3,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-yandex';
 import { ConfigService } from '@nestjs/config';
 import { environmentConstant } from '../../constants/environment.constant';
-import { StrategyName } from '../../shared/enums/strategy-name.enum';
+import { OAuthName } from '../../shared/enums/oauth-name.enum';
 import { authEndpoint } from '../../constants/endpoints/auth.endpoint';
 import { AuthService } from '../../shared/classes/auth.service';
 
 @Injectable()
 export class YandexStrategy extends PassportStrategy(
   Strategy,
-  StrategyName.Yandex,
+  OAuthName.Yandex,
 ) {
   constructor(
     private readonly authService: AuthService,
