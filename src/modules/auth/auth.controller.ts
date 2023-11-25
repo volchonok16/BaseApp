@@ -27,8 +27,8 @@ import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 import { PasswordView } from './views/password.view';
 import {
-  CheckCredentialGuard,
   GoogleAuthGuard,
+  LocalAuthGuard,
   YandexAuthGuard,
 } from '../../common/guards';
 import { OAuthName } from '../../common/shared/enums/oauth-name.enum';
@@ -41,7 +41,7 @@ export class AuthController {
   ) {}
 
   @Post(authEndpoint.login)
-  @UseGuards(CheckCredentialGuard)
+  @UseGuards(LocalAuthGuard)
   @ApiLogin()
   async login(
     @CurrentUser() user: TCurrentUser,

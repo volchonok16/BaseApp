@@ -10,7 +10,7 @@ export class AuthQueryRepository {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async getUserViaEmail(email: string): Promise<UserEntity> {
+  async findUserViaEmail(email: string): Promise<UserEntity> {
     return this.userRepository.findOneBy({ email });
   }
 }
