@@ -3,4 +3,6 @@ export const authEndpoint = {
   login: 'login',
   registration: 'registration',
   authenticateEmail: 'authenticateEmail',
+  google: 'google',
+  googleRedirect: 'google/redirect',
 };

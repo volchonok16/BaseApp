@@ -20,7 +20,7 @@ export class UserEntity {
   email: string;
 
   @Column({ nullable: true })
-  passwordHash: string;
+  passwordHash: string | null;
 
   @Column({ length: 30 })
   createdAt: string = new Date().toISOString();
@@ -37,10 +37,10 @@ export class UserEntity {
 
   static async create(
     data: RegistrationDto,
-    password: string = null,
+    password: string | null = null,
   ): Promise<UserEntity> {
     const result = Object.assign(new UserEntity(), data);
-    result.passwordHash = await bcrypt.hash(password, 10);
+    result.passwordHash = password ? await bcrypt.hash(password, 10) : null;
 
     return result;
   }
