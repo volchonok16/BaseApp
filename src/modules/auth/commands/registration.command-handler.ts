@@ -7,6 +7,8 @@ import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../common/providers/postgres/entities';
 import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
 
+// TODO deprecated Кандидат на удаление
+
 export class RegistrationCommand {
   constructor(public readonly dto: RegistrationDto) {}
 }
@@ -30,7 +32,7 @@ export class RegistrationCommandHandler
     if (emailExists) throw new BadRequestException(`Email already exists`);
 
     const password = generatePassword(16);
-    const user = await UserEntity.create(dto, password);
+    const user = await UserEntity.create(dto.email, password);
     await this.authRepository.saveUser(user);
 
     // TODO добавить отправление письма с сгенерированным паролем

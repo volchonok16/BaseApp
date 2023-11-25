@@ -10,14 +10,9 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { authEndpoint } from '../../common/constants/endpoints/auth.endpoint';
-import {
-  ApiLogin,
-  ApiRegistration,
-} from '../../common/documentations/auth-decorators';
-import { RegistrationDto } from './dto/registration.dto';
-import { LoginCommand, RegistrationCommand } from './commands';
+import { ApiLogin } from '../../common/documentations/auth-decorators';
+import { LoginCommand } from './commands';
 import { ResultNotificationFactory } from '../../common/shared/classes/result-notification.factory';
-import { CheckCredentialGuard } from '../../common/guards/check-credential.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { TCurrentUser } from '../../common/shared/types/current-user.type';
 import { LoginDto } from './dto/login.dto';
@@ -28,12 +23,15 @@ import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 import { PasswordView } from './views/password.view';
 import { ApiAuthenticateEmail } from '../../common/documentations/auth-decorators/authenticate-email.decorator';
-import { GoogleAuthGuard } from '../../common/guards/oauth2-google.guard';
 import {
   ApiGoogleAuth,
   ApiGoogleAuthRedirect,
 } from '../../common/documentations/auth-decorators/login-by-google.decorator';
-
+import {
+  CheckCredentialGuard,
+  GoogleAuthGuard,
+  YandexAuthGuard,
+} from '../../common/guards';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -57,19 +55,6 @@ export class AuthController {
     return notification.getData();
   }
 
-  @Post(authEndpoint.registration)
-  //@HttpCode(HttpStatus.NO_CONTENT)
-  @ApiRegistration()
-  async registration(
-    @Body() dto: RegistrationDto,
-  ): Promise<{ email: string; password: string }> {
-    const notification = await this.commandBus.execute<
-      RegistrationCommand,
-      ResultNotificationFactory<any>
-    >(new RegistrationCommand(dto));
-    return notification.getData();
-  }
-
   @Post(authEndpoint.authenticateEmail)
   @HttpCode(HttpStatus.CREATED)
   @ApiAuthenticateEmail()
@@ -81,15 +66,29 @@ export class AuthController {
     return result.getData();
   }
 
-  @Get(authEndpoint.google)
+  @Get(authEndpoint.google.signIn)
   @UseGuards(GoogleAuthGuard)
   @ApiGoogleAuth()
-  async googleAuth(@Req() req: Request) {}
+  async googleAuth() {}
 
-  @Get(authEndpoint.googleRedirect)
+  @Get(authEndpoint.google.redirect)
   @UseGuards(GoogleAuthGuard)
   @ApiGoogleAuthRedirect()
   async googleAuthRedirect(@Metadata() meta: TMetadata, @Req() req: any) {
+    const notification = await this.commandBus.execute<
+      LoginCommand,
+      ResultNotificationFactory<TCreateToken>
+    >(new LoginCommand({ meta, ...req.user }));
+    return notification.getData();
+  }
+
+  @Get(authEndpoint.yandex.signIn)
+  @UseGuards(YandexAuthGuard)
+  async yandexAuth() {}
+
+  @Get(authEndpoint.yandex.redirect)
+  @UseGuards(YandexAuthGuard)
+  async yandexOauth(@Metadata() meta: TMetadata, @Req() req: any) {
     const notification = await this.commandBus.execute<
       LoginCommand,
       ResultNotificationFactory<TCreateToken>

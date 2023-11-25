@@ -1,15 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { RegistrationDto } from '../../../../modules/auth/dto/registration.dto';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
+import {RoleEntity} from './role.entity';
 import bcrypt from 'bcrypt';
-import { DeviceEntity } from './device.entity';
+import {DeviceEntity} from './device.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -36,10 +28,10 @@ export class UserEntity {
   roles: RoleEntity[];
 
   static async create(
-    data: RegistrationDto,
+    email: string,
     password: string | null = null,
   ): Promise<UserEntity> {
-    const result = Object.assign(new UserEntity(), data);
+    const result = Object.assign(new UserEntity(), { email });
     result.passwordHash = password ? await bcrypt.hash(password, 10) : null;
 
     return result;

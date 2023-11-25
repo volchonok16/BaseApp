@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
 import { setCookiesInterceptorProvider } from '../../common/interceptos/set-cookie-interceptor/set-cookies-interceptor.provider';
 import {
   DeviceEntity,
@@ -14,22 +12,27 @@ import { AuthQueryRepository } from './repositories/auth.query-repository';
 import { TokensFactory } from '../../common/shared/classes/token.factory';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from '../../common/shared/classes/tasks.service';
-import { GoogleStrategy } from '../../common/strategies/google.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { strategy } from '../../common/guards/strategy';
+import { AuthService } from '../../common/shared/classes/auth.service';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([DeviceEntity, UserEntity]),
     ScheduleModule.forRoot(),
   ],
   controllers: [AuthController],
   providers: [
+    AuthService,
     AuthRepository,
     AuthQueryRepository,
     TokensFactory,
     TasksService,
-    GoogleStrategy,
     setCookiesInterceptorProvider,
     ...AUTH_COMMAND_HANDLERS,
+    ...strategy,
   ],
+  exports: [...strategy],
 })
 export class AuthModule {}

@@ -2,7 +2,10 @@ import { EnvironmentsEnum } from '../shared/enums/environments.enum';
 
 export const environmentConstant = {
   environment: 'NODE_ENV',
-  serverPort: 'SERVER_PORT',
+  server: {
+    port: 'SERVER_PORT',
+    host: 'SERVER_HOST',
+  },
   client: {
     port: 'CLIENT_PORT',
     url: 'CLIENT_URL',
@@ -32,8 +35,14 @@ export const environmentConstant = {
     accessToken: 'AT_TTL',
     refreshToken: 'RT_TTL',
   },
-  auth: {
-    googleClientId: 'GOOGLE_CLIENT_ID',
-    googleSecret: 'GOOGLE_SECRET',
+  oauth: {
+    yandex: {
+      clientId: 'YANDEX_CLIENT_ID',
+      secret: 'YANDEX_CLIENT_SECRET',
+    },
+    google: {
+      clientId: 'GOOGLE_CLIENT_ID',
+      secret: 'GOOGLE_SECRET',
+    },
   },
 };
