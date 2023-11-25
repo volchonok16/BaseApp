@@ -4,13 +4,13 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { environmentConstant } from '../../constants/environment.constant';
 import { authEndpoint } from '../../constants/endpoints/auth.endpoint';
-import { StrategyName } from '../../shared/enums/strategy-name.enum';
+import { OAuthName } from '../../shared/enums/oauth-name.enum';
 import { AuthService } from '../../shared/classes/auth.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(
   Strategy,
-  StrategyName.Google,
+  OAuthName.Google,
 ) {
   constructor(
     private readonly authService: AuthService,
