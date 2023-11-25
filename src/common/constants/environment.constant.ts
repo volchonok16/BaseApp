@@ -32,4 +32,8 @@ export const environmentConstant = {
     accessToken: 'AT_TTL',
     refreshToken: 'RT_TTL',
   },
+  auth: {
+    googleClientId: 'GOOGLE_CLIENT_ID',
+    googleSecret: 'GOOGLE_SECRET',
+  },
 };

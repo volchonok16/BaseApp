@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -26,6 +28,12 @@ import { EmailDto } from './dto/email.dto';
 import { AuthenticateEmailCommand } from './commands/authenticate-email.command-handler';
 import { PasswordView } from './views/password.view';
 import { ApiAuthenticateEmail } from '../../common/documentations/auth-decorators/authenticate-email.decorator';
+import { GoogleAuthGuard } from '../../common/guards/oauth2-google.guard';
+import {
+  ApiGoogleAuth,
+  ApiGoogleAuthRedirect,
+} from '../../common/documentations/auth-decorators/login-by-google.decorator';
+
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -71,5 +79,21 @@ export class AuthController {
       ResultNotificationFactory
     >(new AuthenticateEmailCommand(dto));
     return result.getData();
+  }
+
+  @Get(authEndpoint.google)
+  @UseGuards(GoogleAuthGuard)
+  @ApiGoogleAuth()
+  async googleAuth(@Req() req: Request) {}
+
+  @Get(authEndpoint.googleRedirect)
+  @UseGuards(GoogleAuthGuard)
+  @ApiGoogleAuthRedirect()
+  async googleAuthRedirect(@Metadata() meta: TMetadata, @Req() req: any) {
+    const notification = await this.commandBus.execute<
+      LoginCommand,
+      ResultNotificationFactory<TCreateToken>
+    >(new LoginCommand({ meta, ...req.user }));
+    return notification.getData();
   }
 }

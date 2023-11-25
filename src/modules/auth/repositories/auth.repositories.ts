@@ -41,4 +41,13 @@ export class AuthRepository {
   async getUserById(id: string): Promise<UserEntity> {
     return this.userRepository.findOneBy({ id });
   }
+
+  async emailExists(email: string): Promise<string | null> {
+    const isExists = await this.userRepository.exist({ where: { email } });
+    return isExists ? 'email' : null;
+  }
+
+  async getUserByEmail(email: string): Promise<UserEntity | null> {
+    return this.userRepository.findOneBy({ email });
+  }
 }

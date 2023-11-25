@@ -14,6 +14,7 @@ import { AuthQueryRepository } from './repositories/auth.query-repository';
 import { TokensFactory } from '../../common/shared/classes/token.factory';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from '../../common/shared/classes/tasks.service';
+import { GoogleStrategy } from '../../common/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TasksService } from '../../common/shared/classes/tasks.service';
     AuthQueryRepository,
     TokensFactory,
     TasksService,
+    GoogleStrategy,
     setCookiesInterceptorProvider,
     ...AUTH_COMMAND_HANDLERS,
   ],
