@@ -18,8 +18,6 @@ import { GoogleStrategy } from '../../common/strategies/google.strategy';
 
 @Module({
   imports: [
-    CqrsModule,
-    JwtModule.register({}),
     TypeOrmModule.forFeature([DeviceEntity, UserEntity]),
     ScheduleModule.forRoot(),
   ],

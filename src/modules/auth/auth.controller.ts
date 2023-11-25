@@ -34,6 +34,7 @@ import {
   ApiGoogleAuthRedirect,
 } from '../../common/documentations/auth-decorators/login-by-google.decorator';
 
+
 @Controller(authEndpoint.default)
 export class AuthController {
   constructor(

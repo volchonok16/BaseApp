@@ -1,3 +1,5 @@
+import { EnvironmentsEnum } from '../shared/enums/environments.enum';
+
 export const environmentConstant = {
   environment: 'NODE_ENV',
   serverPort: 'SERVER_PORT',
@@ -6,11 +8,21 @@ export const environmentConstant = {
     url: 'CLIENT_URL',
   },
   db: {
-    host: 'DB_HOST',
     port: 'DB_PORT',
-    user: 'DB_USER',
-    password: 'DB_PASSWORD',
-    name: 'DB_NAME',
+    [EnvironmentsEnum.Production]: {
+      host: 'DB_HOST',
+      user: 'DB_USER',
+      password: 'DB_PASSWORD',
+      name: 'DB_NAME',
+      ssl: true,
+    },
+    [EnvironmentsEnum.Developer]: {
+      host: 'TEST_DB_HOST',
+      user: 'TEST_DB_USER',
+      password: 'TEST_DB_PASSWORD',
+      name: 'TEST_DB_NAME',
+      ssl: false,
+    },
   },
   secret: {
     accessToken: 'AT_SECRET',

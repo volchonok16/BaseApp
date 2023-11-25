@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { entities } from './entities';
 import { environmentConstant } from '../../constants/environment.constant';
+import { EnvironmentsEnum } from '../../shared/enums/environments.enum';
 
 @Injectable()
 export class TypeOrmConfig implements TypeOrmOptionsFactory {
@@ -10,17 +11,21 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const { configService } = this;
+    const environment: EnvironmentsEnum = configService.get(
+      environmentConstant.environment,
+    );
+    const dbConfig = environmentConstant.db[environment];
 
     return {
       type: 'postgres',
-      host: configService.get(environmentConstant.db.host),
+      host: configService.get(dbConfig.host),
       port: Number(configService.get(environmentConstant.db.port)),
-      username: configService.get(environmentConstant.db.user),
-      password: configService.get(environmentConstant.db.password),
-      database: configService.get(environmentConstant.db.name),
+      username: configService.get(dbConfig.user),
+      password: configService.get(dbConfig.password),
+      database: configService.get(dbConfig.name),
       entities: [...entities],
       synchronize: true,
-      ssl: true,
+      ssl: dbConfig.ssl,
     };
   }
 }
