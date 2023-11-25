@@ -1,16 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { RegistrationDto } from '../../../../modules/auth/dto/registration.dto';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn,} from 'typeorm';
+import {RoleEntity} from './role.entity';
 import bcrypt from 'bcrypt';
-import { DeviceEntity } from './device.entity';
-import { generatePassword } from '../../../shared/utils/generate-password.utils';
+import {DeviceEntity} from './device.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -20,8 +11,8 @@ export class UserEntity {
   @Column({ length: 50 })
   email: string;
 
-  @Column()
-  passwordHash: string;
+  @Column({ nullable: true })
+  passwordHash: string | null;
 
   @Column({ length: 30 })
   createdAt: string = new Date().toISOString();
@@ -37,12 +28,12 @@ export class UserEntity {
   roles: RoleEntity[];
 
   static async create(
-    data: RegistrationDto,
-  ): Promise<{ user: UserEntity; password: string }> {
-    const result = Object.assign(new UserEntity(), data);
-    const password = generatePassword(16);
-    result.passwordHash = await bcrypt.hash(password, 10);
+    email: string,
+    password: string | null = null,
+  ): Promise<UserEntity> {
+    const result = Object.assign(new UserEntity(), { email });
+    result.passwordHash = password ? await bcrypt.hash(password, 10) : null;
 
-    return { user: result, password };
+    return result;
   }
 }

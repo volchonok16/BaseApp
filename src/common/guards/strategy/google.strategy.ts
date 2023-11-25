@@ -1,29 +1,30 @@
-import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-yandex';
+import { Strategy } from 'passport-google-oauth20';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { environmentConstant } from '../../constants/environment.constant';
-import { StrategyName } from '../../shared/enums/strategy-name.enum';
 import { authEndpoint } from '../../constants/endpoints/auth.endpoint';
+import { StrategyName } from '../../shared/enums/strategy-name.enum';
 import { AuthService } from '../../shared/classes/auth.service';
 
 @Injectable()
-export class YandexStrategy extends PassportStrategy(
+export class GoogleStrategy extends PassportStrategy(
   Strategy,
-  StrategyName.Yandex,
+  StrategyName.Google,
 ) {
   constructor(
     private readonly authService: AuthService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
   ) {
-    const yandexOauthConfig = environmentConstant.oauth.yandex;
+    const googleOauthConfig = environmentConstant.oauth.google;
     const host = configService.get(environmentConstant.server.host);
     const port = configService.get(environmentConstant.server.port);
 
     super({
-      clientID: configService.get(yandexOauthConfig.clientId),
-      clientSecret: configService.get(yandexOauthConfig.secret),
-      callbackURL: `${host}:${port}/${authEndpoint.default}/${authEndpoint.yandex.redirect}`,
+      clientID: configService.get(googleOauthConfig.clientId),
+      clientSecret: configService.get(googleOauthConfig.secret),
+      callbackURL: `${host}:${port}/${authEndpoint.default}/${authEndpoint.google.redirect}`,
+      scope: ['email', 'profile'],
     });
   }
 

@@ -2,7 +2,10 @@ import { EnvironmentsEnum } from '../shared/enums/environments.enum';
 
 export const environmentConstant = {
   environment: 'NODE_ENV',
-  serverPort: 'SERVER_PORT',
+  server: {
+    port: 'SERVER_PORT',
+    host: 'SERVER_HOST',
+  },
   client: {
     port: 'CLIENT_PORT',
     url: 'CLIENT_URL',
@@ -36,7 +39,10 @@ export const environmentConstant = {
     yandex: {
       clientId: 'YANDEX_CLIENT_ID',
       secret: 'YANDEX_CLIENT_SECRET',
-      callbackUrl: 'YANDEX_CALLBACK_URL',
+    },
+    google: {
+      clientId: 'GOOGLE_CLIENT_ID',
+      secret: 'GOOGLE_SECRET',
     },
   },
 };

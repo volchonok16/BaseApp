@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from '../../common/shared/classes/tasks.service';
 import { PassportModule } from '@nestjs/passport';
 import { strategy } from '../../common/guards/strategy';
+import { AuthService } from '../../common/shared/classes/auth.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { strategy } from '../../common/guards/strategy';
   ],
   controllers: [AuthController],
   providers: [
+    AuthService,
     AuthRepository,
     AuthQueryRepository,
     TokensFactory,

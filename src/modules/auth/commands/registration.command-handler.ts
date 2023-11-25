@@ -5,6 +5,9 @@ import { AuthQueryRepository } from '../repositories/auth.query-repository';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../common/providers/postgres/entities';
+import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
+
+// TODO deprecated Кандидат на удаление
 
 export class RegistrationCommand {
   constructor(public readonly dto: RegistrationDto) {}
@@ -18,20 +21,18 @@ export class RegistrationCommandHandler
   >
   implements ICommandHandler<RegistrationCommand>
 {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly authQueryRepository: AuthQueryRepository,
-  ) {
+  constructor(private readonly authRepository: AuthRepository) {
     super();
   }
 
   async executeUseCase({
     dto,
   }: RegistrationCommand): Promise<{ email: string; password: string }> {
-    const emailExists = await this.authQueryRepository.emailExists(dto.email);
+    const emailExists = await this.authRepository.emailExists(dto.email);
     if (emailExists) throw new BadRequestException(`Email already exists`);
 
-    const { user, password } = await UserEntity.create(dto);
+    const password = generatePassword(16);
+    const user = await UserEntity.create(dto.email, password);
     await this.authRepository.saveUser(user);
 
     // TODO добавить отправление письма с сгенерированным паролем

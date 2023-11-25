@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { BaseNotificationUseCase } from '../../../common/shared/classes/base-notification.use-case';
 import { WithClientMeta } from '../../../common/shared/types/with-client-meta.type';
 import { TCurrentUser } from '../../../common/shared/types/current-user.type';
-import { LoginView } from '../views/login.view';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { TokensFactory } from '../../../common/shared/classes/token.factory';
 import { DeviceEntity } from '../../../common/providers/postgres/entities';
