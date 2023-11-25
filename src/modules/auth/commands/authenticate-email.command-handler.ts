@@ -6,6 +6,7 @@ import { AuthRepository } from '../repositories/auth.repositories';
 import { UserEntity } from '../../../common/providers/postgres/entities';
 import { EmailDto } from '../dto/email.dto';
 import { PasswordView } from '../views/password.view';
+import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
 
 export class AuthenticateEmailCommand {
   constructor(public readonly dto: EmailDto) {}
@@ -16,10 +17,7 @@ export class AuthenticateEmailCommandHandler
   extends BaseNotificationUseCase<AuthenticateEmailCommand, PasswordView>
   implements ICommandHandler<AuthenticateEmailCommand>
 {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly authQueryRepository: AuthQueryRepository,
-  ) {
+  constructor(private readonly authRepository: AuthRepository) {
     super();
   }
 
@@ -27,7 +25,7 @@ export class AuthenticateEmailCommandHandler
     dto,
   }: AuthenticateEmailCommand): Promise<PasswordView> {
     // await this.checkEmailExists(dto.email);
-    const emailExists = await this.authQueryRepository.emailExists(dto.email);
+    const emailExists = await this.authRepository.emailExists(dto.email);
     if (!emailExists) {
       const { password, id } = await this.createNewUser(dto.email);
       console.log(id);
@@ -39,8 +37,9 @@ export class AuthenticateEmailCommandHandler
   }
 
   private async createNewUser(email: string): Promise<PasswordView & IdView> {
-    const result = await UserEntity.create({ email });
-    const { id } = await this.authRepository.saveUser(result.user);
-    return { password: result.password, id };
+    const password = generatePassword(16);
+    const user = await UserEntity.create({ email }, password);
+    const { id } = await this.authRepository.saveUser(user);
+    return { password, id };
   }
 }

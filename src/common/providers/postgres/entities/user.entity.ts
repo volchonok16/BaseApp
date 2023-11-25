@@ -10,7 +10,6 @@ import { RoleEntity } from './role.entity';
 import { RegistrationDto } from '../../../../modules/auth/dto/registration.dto';
 import bcrypt from 'bcrypt';
 import { DeviceEntity } from './device.entity';
-import { generatePassword } from '../../../shared/utils/generate-password.utils';
 
 @Entity('users')
 export class UserEntity {
@@ -20,7 +19,7 @@ export class UserEntity {
   @Column({ length: 50 })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   passwordHash: string;
 
   @Column({ length: 30 })
@@ -38,11 +37,11 @@ export class UserEntity {
 
   static async create(
     data: RegistrationDto,
-  ): Promise<{ user: UserEntity; password: string }> {
+    password: string = null,
+  ): Promise<UserEntity> {
     const result = Object.assign(new UserEntity(), data);
-    const password = generatePassword(16);
     result.passwordHash = await bcrypt.hash(password, 10);
 
-    return { user: result, password };
+    return result;
   }
 }
