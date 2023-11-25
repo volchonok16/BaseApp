@@ -12,13 +12,11 @@ import { AuthQueryRepository } from './repositories/auth.query-repository';
 import { TokensFactory } from '../../common/shared/classes/token.factory';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from '../../common/shared/classes/tasks.service';
-import { PassportModule } from '@nestjs/passport';
 import { strategy } from '../../common/guards/strategy';
 import { AuthService } from '../../common/shared/classes/auth.service';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([DeviceEntity, UserEntity]),
     ScheduleModule.forRoot(),
   ],

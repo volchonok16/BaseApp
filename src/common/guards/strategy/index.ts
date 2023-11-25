@@ -1,5 +1,5 @@
 import { YandexStrategy } from './yandex-oauth.strategy';
-import { JwtStrategy } from './jwt.strategy';
-import {GoogleStrategy} from "./google.strategy";
+import { GoogleStrategy } from './google.strategy';
+import { LocalStrategy } from './local.strategy';
 
-export const strategy = [GoogleStrategy, JwtStrategy, YandexStrategy];
+export const strategy = [GoogleStrategy, LocalStrategy, YandexStrategy];
