@@ -11,17 +11,17 @@ export class RegistrationDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({
-    description: 'Логин пользователя',
-    example: 'MyLogin',
-  })
-  @MaxLength(20)
-  @IsString()
-  @IsNotEmpty()
-  login: string;
-
-  @ApiProperty({ description: 'Пароль пользователя', example: 'qwerty' })
-  @IsString()
-  @IsNotEmpty()
-  password: string;
+  // @ApiProperty({
+  //   description: 'Логин пользователя',
+  //   example: 'MyLogin',
+  // })
+  // @MaxLength(20)
+  // @IsString()
+  // @IsNotEmpty()
+  // login: string;
+  //
+  // @ApiProperty({ description: 'Пароль пользователя', example: 'qwerty' })
+  // @IsString()
+  // @IsNotEmpty()
+  // password: string;
 }

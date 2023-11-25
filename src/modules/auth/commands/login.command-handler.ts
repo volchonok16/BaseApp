@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { BaseNotificationUseCase } from '../../../common/shared/classes/base-notification.use-case';
 import { WithClientMeta } from '../../../common/shared/types/with-client-meta.type';
 import { TCurrentUser } from '../../../common/shared/types/current-user.type';
-import { LoginView } from '../views/login.view';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { TokensFactory } from '../../../common/shared/classes/token.factory';
 import { DeviceEntity } from '../../../common/providers/postgres/entities';
@@ -17,7 +16,7 @@ export class LoginCommand {
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler
-  extends BaseNotificationUseCase<LoginCommand, LoginView>
+  extends BaseNotificationUseCase<LoginCommand, TCreateToken>
   implements ICommandHandler<LoginCommand>
 {
   constructor(
@@ -31,6 +30,12 @@ export class LoginCommandHandler
   async executeUseCase({ dto }: LoginCommand): Promise<TCreateToken> {
     const tokens = await this.tokenFactory.getPairTokens(dto.userId);
     const createdAt = await this.getCreatedAt(tokens.accessToken);
+
+    const user = await this.authRepository.getUserById(dto.userId);
+    if (!user.isLoggedIn) {
+      user.isLoggedIn = true;
+      await this.authRepository.saveUser(user);
+    }
 
     const newDevice = DeviceEntity.create(dto, createdAt);
     await this.authRepository.createDevice(newDevice);

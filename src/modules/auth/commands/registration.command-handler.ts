@@ -1,13 +1,13 @@
 import { RegistrationDto } from '../dto/registration.dto';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BaseNotificationUseCase } from '../../../common/shared/classes/base-notification.use-case';
-import { ResultNotificationFactory } from '../../../common/shared/classes/result-notification.factory';
-import { IdView } from '../views/id.view';
 import { AuthQueryRepository } from '../repositories/auth.query-repository';
 import { AuthRepository } from '../repositories/auth.repositories';
 import { BadRequestException } from '@nestjs/common';
 import { UserEntity } from '../../../common/providers/postgres/entities';
-import { join } from 'path';
+import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
+
+// TODO deprecated Кандидат на удаление
 
 export class RegistrationCommand {
   constructor(public readonly dto: RegistrationDto) {}
@@ -15,35 +15,28 @@ export class RegistrationCommand {
 
 @CommandHandler(RegistrationCommand)
 export class RegistrationCommandHandler
-  extends BaseNotificationUseCase<RegistrationCommand, IdView>
+  extends BaseNotificationUseCase<
+    RegistrationCommand,
+    { email: string; password: string } // вариант для тестов, обработке на юае не подлежит
+  >
   implements ICommandHandler<RegistrationCommand>
 {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly authQueryRepository: AuthQueryRepository,
-  ) {
+  constructor(private readonly authRepository: AuthRepository) {
     super();
   }
 
-  async executeUseCase({ dto }: RegistrationCommand): Promise<IdView> {
-    await this.checkFieldsExists(dto);
+  async executeUseCase({
+    dto,
+  }: RegistrationCommand): Promise<{ email: string; password: string }> {
+    const emailExists = await this.authRepository.emailExists(dto.email);
+    if (emailExists) throw new BadRequestException(`Email already exists`);
 
-    const newUser = await UserEntity.create(dto);
-    return this.authRepository.createUser(newUser);
-  }
+    const password = generatePassword(16);
+    const user = await UserEntity.create(dto.email, password);
+    await this.authRepository.saveUser(user);
 
-  private async checkFieldsExists(dto: RegistrationDto): Promise<void> {
-    const emailExists = this.authQueryRepository.emailExists(dto.email);
-    const loginExists = this.authQueryRepository.loginExists(dto.login);
+    // TODO добавить отправление письма с сгенерированным паролем
 
-    const [email, login] = await Promise.all([emailExists, loginExists]);
-    if (email || login) {
-      const fieldsExists = [];
-      if (email) fieldsExists.push(email);
-      if (login) fieldsExists.push(login);
-      throw new BadRequestException(
-        `${fieldsExists.join(', ')} already exists`,
-      );
-    }
+    return { email: dto.email, password };
   }
 }
