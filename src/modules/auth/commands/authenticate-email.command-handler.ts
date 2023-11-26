@@ -1,12 +1,12 @@
-import {CommandHandler, ICommandHandler} from '@nestjs/cqrs';
-import {BaseNotificationUseCase} from '../../../common/shared/classes/base-notification.use-case';
-import {IdView} from '../views/id.view';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { BaseNotificationUseCase } from '../../../common/shared/classes/base-notification.use-case';
+import { IdView } from '../views/id.view';
 import bcrypt from 'bcrypt';
-import {AuthRepository} from '../repositories/auth.repositories';
-import {UserEntity} from '../../../common/providers/postgres/entities';
-import {EmailDto} from '../dto/email.dto';
-import {PasswordView} from '../views/password.view';
-import {generatePassword} from '../../../common/shared/utils/generate-password.utils';
+import { AuthRepository } from '../repositories/auth.repositories';
+import { UserEntity } from '../../../common/providers/postgres/entities';
+import { EmailDto } from '../dto/email.dto';
+import { PasswordView } from '../views/password.view';
+import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
 
 export class AuthenticateEmailCommand {
   constructor(public readonly dto: EmailDto) {}

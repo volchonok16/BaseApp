@@ -1,4 +1,4 @@
 export type TCurrentUser = {
   userId: string;
-  roles: string[];
+  roles: any[]; // TODO fix it
 };

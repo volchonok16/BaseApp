@@ -9,6 +9,7 @@ export function ApiOAuthRedirect(oauthName: OAuthName) {
     ApiTags('OAuth'),
     ApiOperation({
       summary: `Логин пользователя через "${oauthName}" (OAuth2) (непосредственный вход в систему)`,
+      description: `Ендпоинт на которой перенапрвляет "${oauthName}"`,
     }),
     ApiCreatedResponse({
       description: `Вернет в "теле" accessToken, который заекспарится через ${settings.ttl.accessToken} и refreshToken в куки (${settings.ttl.refreshToken})`,
