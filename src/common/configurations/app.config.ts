@@ -11,7 +11,7 @@ export const appConfig = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const clientUrl = configService.get(environmentConstant.client.url);
   const clientPort = configService.get(environmentConstant.client.port);
-  console.log(`${clientUrl}:${clientPort}`);
+
   const options = {
     origin: [`${clientUrl}:${clientPort}`],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
