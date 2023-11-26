@@ -7,8 +7,8 @@ export const environmentConstant = {
     host: 'SERVER_HOST',
   },
   client: {
-    port: 'CLIENT_URL',
-    url: 'CLIENT_PORT',
+    port: 'CLIENT_PORT',
+    url: 'CLIENT_URL',
   },
   db: {
     port: 'DB_PORT',
