@@ -7,6 +7,9 @@ import { UserEntity } from '../../../common/providers/postgres/entities';
 import { EmailDto } from '../dto/email.dto';
 import { PasswordView } from '../views/password.view';
 import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 export class AuthenticateEmailCommand {
   constructor(public readonly dto: EmailDto) {}
@@ -17,7 +20,10 @@ export class AuthenticateEmailCommandHandler
   extends BaseNotificationUseCase<AuthenticateEmailCommand, PasswordView>
   implements ICommandHandler<AuthenticateEmailCommand>
 {
-  constructor(private readonly authRepository: AuthRepository) {
+  constructor(
+    private readonly authRepository: AuthRepository,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+  ) {
     super();
   }
 
@@ -30,6 +36,9 @@ export class AuthenticateEmailCommandHandler
       const { password } = await this.createAndSaveNewUser(dto.email);
       //todo send email with pass (return no content)
       //mailer.sendEmail(password, email)
+
+      //TODO delete later
+      await this.cacheManager.set('password', password);
       return { password };
     }
 
@@ -37,10 +46,15 @@ export class AuthenticateEmailCommandHandler
       //the case, when user login the first time just by email (not oauth2)
       const { password } = await this.saveNewPasswordHash(user);
       //todo send email with pass
+
+      //TODO delete later
+      await this.cacheManager.set('password', password);
       return { password };
     }
 
-    return { password: null }; //user exists (pass=null just for synchronization, after connecting email it needs in deletion)
+    //TODO delete later
+    const password: string = await this.cacheManager.get('password');
+    return { password }; //user exists (pass=null just for synchronization, after connecting email it needs in deletion)
   }
 
   private async createAndSaveNewUser(
