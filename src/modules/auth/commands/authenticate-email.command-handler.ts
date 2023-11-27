@@ -7,6 +7,7 @@ import { UserEntity } from '../../../common/providers/postgres/entities';
 import { EmailDto } from '../dto/email.dto';
 import { PasswordView } from '../views/password.view';
 import { generatePassword } from '../../../common/shared/utils/generate-password.utils';
+import { EmailAdapters, EmailManager } from '../../../common/adapters/email';
 
 export class AuthenticateEmailCommand {
   constructor(public readonly dto: EmailDto) {}
@@ -17,7 +18,10 @@ export class AuthenticateEmailCommandHandler
   extends BaseNotificationUseCase<AuthenticateEmailCommand, PasswordView>
   implements ICommandHandler<AuthenticateEmailCommand>
 {
-  constructor(private readonly authRepository: AuthRepository) {
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly emailManager: EmailManager,
+  ) {
     super();
   }
 
@@ -28,19 +32,22 @@ export class AuthenticateEmailCommandHandler
     const user = await this.authRepository.getUserByEmail(dto.email);
     if (!user) {
       const { password } = await this.createAndSaveNewUser(dto.email);
-      //todo send email with pass (return no content)
-      //mailer.sendEmail(password, email)
+
+      this.emailManager.sendCompleteRegistrationMail(dto.email, password);
+
       return { password };
     }
 
     if (user.passwordHash === null) {
       //the case, when user login the first time just by email (not oauth2)
       const { password } = await this.saveNewPasswordHash(user);
-      //todo send email with pass
+
+      this.emailManager.sendCompleteRegistrationMail(dto.email, password);
+
       return { password };
     }
 
-    return { password: null }; //user exists (pass=null just for synchronization, after connecting email it needs in deletion)
+    return { password: null };
   }
 
   private async createAndSaveNewUser(
