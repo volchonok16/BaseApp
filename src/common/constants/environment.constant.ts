@@ -45,4 +45,10 @@ export const environmentConstant = {
       secret: 'GOOGLE_SECRET',
     },
   },
+  mail: {
+    host: 'MAILBOX_HOST',
+    port: 'MAILBOX_PORT',
+    mailbox: 'MAILBOX',
+    password: 'EMAIL_PASSWORD',
+  },
 };

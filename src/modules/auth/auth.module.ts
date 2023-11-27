@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from '../../common/shared/classes/tasks.service';
 import { strategy } from '../../common/guards/strategy';
 import { AuthService } from '../../common/shared/classes/auth.service';
+import { EmailAdapters, EmailManager } from '../../common/adapters/email';
 
 @Module({
   imports: [
@@ -25,6 +26,8 @@ import { AuthService } from '../../common/shared/classes/auth.service';
     AuthService,
     AuthRepository,
     AuthQueryRepository,
+    EmailAdapters,
+    EmailManager,
     TokensFactory,
     TasksService,
     setCookiesInterceptorProvider,
