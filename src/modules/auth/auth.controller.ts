@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -32,6 +33,7 @@ import {
   YandexAuthGuard,
 } from '../../common/guards';
 import { OAuthName } from '../../common/shared/enums/oauth-name.enum';
+import { Response } from 'express';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -77,12 +79,27 @@ export class AuthController {
   async googleAuthRedirect(
     @Metadata() meta: TMetadata,
     @CurrentUser() user: TCurrentUser,
+    @Res() res: Response,
   ) {
     const notification = await this.commandBus.execute<
       LoginCommand,
       ResultNotificationFactory<TCreateToken>
     >(new LoginCommand({ meta, ...user }));
-    return notification.getData();
+    const r = notification.getData();
+    res
+      .cookie('refreshToken', r.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 15 * 60 * 60 * 1000,
+        sameSite: 'none',
+      })
+      .redirect(`http://localhost:3000/auth/yandex/redirect?${r.accessToken}`);
+    return;
+  }
+
+  @Get()
+  async a(@Body() body: any) {
+    console.log(body);
   }
 
   @Get(authEndpoint.yandex.signIn)

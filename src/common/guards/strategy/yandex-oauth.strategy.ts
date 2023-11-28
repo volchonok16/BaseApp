@@ -24,6 +24,8 @@ export class YandexStrategy extends PassportStrategy(
       clientID: configService.get(yandexOauthConfig.clientId),
       clientSecret: configService.get(yandexOauthConfig.secret),
       callbackURL: `${host}:${port}/${authEndpoint.default}/${authEndpoint.yandex.redirect}`,
+      // callbackURL:
+      //   'https://4e977b58a9d176848516ced5455ade93.serveo.net/auth/yandex/redirect',
     });
   }
 

@@ -13,11 +13,12 @@ export const appConfig = (app: INestApplication) => {
   const clientPort = configService.get(environmentConstant.client.port);
 
   const options = {
-    origin: [`${clientUrl}:${clientPort}`],
+    origin: [`${clientUrl}:${clientPort}`, 'http://localhost:3000'],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     credentials: true,
     allowedHeaders: [
       'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Origin',
       'Origin, X-Requested-With, Content-Type, Accept',
       'Authorization',
     ],
