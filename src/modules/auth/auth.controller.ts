@@ -32,6 +32,7 @@ import {
   YandexAuthGuard,
 } from '../../common/guards';
 import { OAuthName } from '../../common/shared/enums/oauth-name.enum';
+import { RecaptchaGuard } from '../../common/guards/recaptcha.guard';
 
 @Controller(authEndpoint.default)
 export class AuthController {
@@ -57,6 +58,7 @@ export class AuthController {
 
   @Post(authEndpoint.authenticateEmail)
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(RecaptchaGuard)
   @ApiAuthenticateEmail()
   async authenticateEmail(@Body() dto: EmailDto): Promise<PasswordView> {
     const result = await this.commandBus.execute<

@@ -30,6 +30,7 @@ export const environmentConstant = {
   secret: {
     accessToken: 'AT_SECRET',
     refreshToken: 'RT_SECRET',
+    recaptchaSecrete: 'RECAPTCHA_SECRET',
   },
   ttl: {
     accessToken: 'AT_TTL',
